@@ -1,20 +1,24 @@
 'use client';
 
+import { getMoviesAPISingleton } from "../../movies-api/movies-api"
 import { useEffect, useState } from 'react';
 
 export default function spa() {
+  const moviesAPI = getMoviesAPISingleton();
 
   const [movieTitleQuery, setMovieTitleQuery] = useState("");
 
   // TODO: create a wrapper around fetch that injects the omdb api that should come from a .env file
   useEffect(() => {
     const getMovies = async () => {
-      try {
-        const response = await fetch("http://www.omdbapi.com/?t=" + movieTitleQuery + "&apikey=<>");
-        const result = await response.json();
-        console.log(result);
-      } catch (err) {
-        console.log(err);
+      if (movieTitleQuery) {
+        try {
+          const response = await moviesAPI.searchByTitle(movieTitleQuery);
+          const result = await response.json();
+          console.log(result);
+        } catch (err) {
+          console.log(err);
+        }
       }
     };
 
