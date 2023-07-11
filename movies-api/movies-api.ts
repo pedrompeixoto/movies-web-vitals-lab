@@ -2,24 +2,40 @@
 class MoviesAPI {
     BASE_URL = "http://www.omdbapi.com/";
 
-    private fetch(url: string, options?: RequestInit) {
+    private fetch(url: string, searchParams?: URLSearchParams, options?: RequestInit) {
 
         let urlString = this.BASE_URL + url;
-        let reqUrl = new URL(urlString);
 
-        if (reqUrl.searchParams.size <= 0) {
-           urlString += "?";
-        } else {
-           urlString += "&";
+        if (!searchParams) {
+            searchParams = new URLSearchParams()
+        } 
+
+        if (process.env.NEXT_PUBLIC_MOVIES_API_KEY) {
+            searchParams.append("apiKey", process.env.NEXT_PUBLIC_MOVIES_API_KEY)
         }
 
-        urlString += "apiKey=" + process.env.NEXT_PUBLIC_MOVIES_API_KEY;
+        if (searchParams.size > 0) {
+            urlString += "?" + searchParams.toString();
+        }
 
         return fetch(urlString, options);
     }
 
     searchByTitle(title: string) {
-        return this.fetch("?t=" + title);
+        const searchParams = new URLSearchParams();
+
+        searchParams.append("t", title);
+
+        return this.fetch("", searchParams);
+    }
+
+    search(title: string, page: number = 1) {
+        const searchParams = new URLSearchParams();
+
+        searchParams.append("s", title);
+        searchParams.append("p", page.toString());
+
+        return this.fetch("", searchParams);
     }
 }
 

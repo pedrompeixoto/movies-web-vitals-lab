@@ -17,13 +17,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <nav className="flex flex-row gap-5 justify-center py-16 py-8">
-          <Link href="/spa">SPA</Link>
-          <Link href="/ssr">SSR</Link>
-          <Link href="/ssg">SSG</Link>
-        </nav>
-        {children}
+      <body className={inter.className + " min-h-screen"}>
+          <nav className="flex flex-row gap-5 justify-center py-16 py-8">
+            <Link href="/spa">SPA</Link>
+            <Link href="/ssr">SSR</Link>
+            <Link href="/ssg">SSG</Link>
+          </nav>
+          {children}
       </body>
     </html>
   )
