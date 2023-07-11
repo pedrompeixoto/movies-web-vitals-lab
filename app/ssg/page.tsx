@@ -1,17 +1,14 @@
-
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { getMoviesAPISingleton } from "../../movies-api/movies-api"
 
-export const dynamic = "force-dynamic"
+export const dynamic = "error"
 
 const moviesAPI = getMoviesAPISingleton();
-const movieTitleQuery = "pulp fiction"
 
-export default async function SSR() {
-  const response = await moviesAPI.searchByTitle(movieTitleQuery);
-  const movie = await response.json();
-
-  console.log(movie);
-
+export default async function SSG() {
+  const movieRes = await moviesAPI.searchByTitle("pulp fiction")
+  const movie = await movieRes.json();
+  
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <p>{ movie.Title }</p>
