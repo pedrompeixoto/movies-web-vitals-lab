@@ -27,9 +27,9 @@ export default function SPA() {
   }, [movieTitleQuery]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center p-24">
       <button onClick={() => setMovieTitleQuery("pulp fiction")}>search</button>
-      <p>{movie.Title}</p>
+      <p className="mt-8">{movie.Title}</p>
     </main>
   );
 }
