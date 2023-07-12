@@ -1,52 +1,53 @@
 
 class MoviesAPI {
-    BASE_URL = "http://www.omdbapi.com/";
+  BASE_URL = "http://www.omdbapi.com/";
 
-    private fetch(url: string, searchParams?: URLSearchParams, options?: RequestInit) {
+  private fetch(url: string, searchParams?: URLSearchParams, options?: RequestInit) {
 
-        let urlString = this.BASE_URL + url;
+    let urlString = this.BASE_URL + url;
 
-        if (!searchParams) {
-            searchParams = new URLSearchParams()
-        } 
+    if (!searchParams) {
+      searchParams = new URLSearchParams()
+    } 
 
-        if (process.env.NEXT_PUBLIC_MOVIES_API_KEY) {
-            searchParams.append("apiKey", process.env.NEXT_PUBLIC_MOVIES_API_KEY)
-        }
-
-        if (searchParams.size > 0) {
-            urlString += "?" + searchParams.toString();
-        }
-
-        return fetch(urlString, options);
+    if (process.env.NEXT_PUBLIC_MOVIES_API_KEY) {
+      searchParams.append("apiKey", process.env.NEXT_PUBLIC_MOVIES_API_KEY)
     }
 
-    searchByTitle(title: string) {
-        const searchParams = new URLSearchParams();
-
-        searchParams.append("t", title);
-
-        return this.fetch("", searchParams);
+    const urlParamsStr = searchParams.toString();
+    if (urlParamsStr) {
+      urlString += "?" + urlParamsStr;
     }
 
-    search(title: string, page: number = 1) {
-        const searchParams = new URLSearchParams();
+    return fetch(urlString, options); 
+  }
 
-        searchParams.append("s", title);
-        searchParams.append("p", page.toString());
+  searchByTitle(title: string) {
+    const searchParams = new URLSearchParams();
 
-        return this.fetch("", searchParams);
-    }
+    searchParams.append("t", title);
+
+    return this.fetch("", searchParams);
+  }
+
+  search(title: string, page: number = 1) {
+    const searchParams = new URLSearchParams();
+
+    searchParams.append("s", title);
+    searchParams.append("p", page.toString());
+
+    return this.fetch("", searchParams);
+  }
 }
 
 let movieAPIInstance: MoviesAPI | null = null
 
 function getMoviesAPISingleton() {
-    if (!movieAPIInstance) {
-        return new MoviesAPI()
-    }
+  if (!movieAPIInstance) {
+    return new MoviesAPI()
+  }
 
-    return movieAPIInstance
+  return movieAPIInstance
 }
 
 export { getMoviesAPISingleton };

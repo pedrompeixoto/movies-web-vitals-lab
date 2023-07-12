@@ -34,6 +34,7 @@ export default function SPA() {
 
   return (
     <main className="flex flex-col items-center p-24">
+      <input className="" type="text" value={movieTitleQuery}/>
       <button onClick={() => setMovieTitleQuery("pulp fiction")}>search</button>
       <p className="mt-8">{movie.Title}</p>
     </main>
