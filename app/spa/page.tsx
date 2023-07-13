@@ -14,7 +14,7 @@ export default function SPA() {
     const getMovies = async () => {
       if (movieTitleQuery) {
         try {
-          const response = await moviesAPI.searchByTitle(movieTitleQuery);
+          const response = await moviesAPI.getMovieByTitle(movieTitleQuery);
           const result = await response.json();
 
           const response2 = await moviesAPI.search(movieTitleQuery);

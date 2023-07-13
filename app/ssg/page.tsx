@@ -6,7 +6,7 @@ export const dynamic = "error"
 const moviesAPI = getMoviesAPISingleton();
 
 export default async function SSG() {
-  const movieRes = await moviesAPI.searchByTitle("pulp fiction")
+  const movieRes = await moviesAPI.getMovieByTitle("pulp fiction")
   const movie = await movieRes.json();
   
   return (

@@ -1,4 +1,9 @@
 
+interface MovieAPISearchFilters {
+  type?: "movies" | "series" | "espisode";
+  year?: number;
+}
+
 class MoviesAPI {
   BASE_URL = "http://www.omdbapi.com/";
 
@@ -22,7 +27,7 @@ class MoviesAPI {
     return fetch(urlString, options); 
   }
 
-  searchByTitle(title: string) {
+  getMovieByTitle(title: string) {
     const searchParams = new URLSearchParams();
 
     searchParams.append("t", title);
@@ -30,11 +35,29 @@ class MoviesAPI {
     return this.fetch("", searchParams);
   }
 
-  search(title: string, page: number = 1) {
+  getMovieByID(id: string) {
+    const searchParams = new URLSearchParams();
+
+    searchParams.append("i", id);
+
+    return this.fetch("", searchParams);
+  }
+
+  search(title: string, filters?: MovieAPISearchFilters, page: number = 1) {
     const searchParams = new URLSearchParams();
 
     searchParams.append("s", title);
     searchParams.append("p", page.toString());
+
+    if (filters) {
+      if (filters.type) {
+        searchParams.append("t", filters.type);
+      }
+
+      if (filters.year) {
+        searchParams.append("y", filters.year.toString());
+      }
+    }
 
     return this.fetch("", searchParams);
   }
@@ -51,3 +74,4 @@ function getMoviesAPISingleton() {
 }
 
 export { getMoviesAPISingleton };
+export type MovieAPISearchFilter = MovieAPISearchFilters;

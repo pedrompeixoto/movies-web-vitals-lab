@@ -7,7 +7,7 @@ const moviesAPI = getMoviesAPISingleton();
 const movieTitleQuery = "pulp fiction"
 
 export default async function SSR() {
-  const response = await moviesAPI.searchByTitle(movieTitleQuery);
+  const response = await moviesAPI.getMovieByTitle(movieTitleQuery);
   const movie = await response.json();
 
   return (
