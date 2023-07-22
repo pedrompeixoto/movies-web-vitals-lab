@@ -1,5 +1,6 @@
 'use client';
 
+import MovieEntry from "@/components/movie-entry";
 import { MovieAPIMovie, getMoviesAPISingleton } from "../../movies-api/movies-api"
 import { useState } from 'react';
 
@@ -28,21 +29,16 @@ export default function SPA() {
           value={movieTitleQuery} 
           onChange={e => setMovieTitleQuery(e.target.value)}
         />
-        <button className="text-center h-full w-20 font-bold bg-[]" onClick={() => getMovies()}>Search</button>
+        <button className="text-center h-full w-20 font-bold bg-[]" onClick={() => getMovies()}>
+          Search
+        </button>
       </div>
 
       <div className="grid grid-cols-4 gap-8 place-content-center">
         { movies.map(movie => {
           {/* TODO placeholder when image is missing. Entries without a poster are hidden for now */} 
           if (movie.primaryImage?.url) {
-            return (
-              <div className="flex flex-col gap-4 items-center" key={movie._id}>
-                <div className="h-60 w-60 overflow-hidden flex justify-center items-center">
-                  <img className="max-h-full max-w-full" src={ movie.primaryImage?.url } alt={movie.titleText.text}/>
-                </div>
-                <span className="text-center">{ movie.titleText.text }</span>
-              </div>
-            )
+            return (<MovieEntry key={movie._id} movie={movie}></MovieEntry>);
           } else {
             return null;
           }
