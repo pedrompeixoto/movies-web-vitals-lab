@@ -87,20 +87,27 @@ class MoviesAPI {
 
   async searchByTitle(title: string): Promise<MovieAPIPaginatedRes<MovieAPIMovie>> {
     try {
-      const body = { titleType: "movie" };
-      const response = await this.fetch("/titles/search/title/" + title, { body: JSON.stringify(body) });
+      const params = new URLSearchParams();
+      params.append("titleType", "movie");
+
+      const response = await this.fetch("/titles/search/title/" + title + '?' + params.toString());
       const data = await response.json() as MovieAPIPaginatedRes<MovieAPIMovie>;
+
       return Promise.resolve(data);
     } catch (error) {
+      console.log(error)
       return Promise.reject(new MovieAPIError("Failed to search movies"));
     }
   }
 
   async searchByKeyword(title: string): Promise<MovieAPIPaginatedRes<MovieAPIMovie>> {
     try {
-      const body = { titleType: "movie" };
-      const response = await this.fetch("/titles/search/keyword/" + title, { body: JSON.stringify(body) });
+      const params = new URLSearchParams();
+      params.append("titleType", "movie");
+
+      const response = await this.fetch("/titles/search/keyword/" + title + '?' + params.toString());
       const data = await response.json() as MovieAPIPaginatedRes<MovieAPIMovie>;
+
       return Promise.resolve(data);
     } catch (error) {
       return Promise.reject(new MovieAPIError("Failed to search movies"));
@@ -109,14 +116,17 @@ class MoviesAPI {
 
   async rating(imdbId: string): Promise<MovieAPIRating> {
     try {
+      const params = new URLSearchParams();
+      params.append("titleType", "movie");
+
       const response = await this.fetch("/titles/" + imdbId + "/ratings");
       const data = await response.json() as MovieAPIRating;
+
       return Promise.resolve(data);
     } catch (error) {
       return Promise.reject(new MovieAPIError("Failed to retrieve rating."));
     }
   }
-  
 }
 
 let movieAPIInstance: MoviesAPI | null = null
