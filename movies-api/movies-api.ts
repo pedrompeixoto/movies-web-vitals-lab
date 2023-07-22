@@ -1,65 +1,92 @@
+class MovieAPIError {
+  message: string;
 
-interface MovieAPISearchFilters {
-  type?: "movies" | "series" | "espisode";
-  year?: number;
+  constructor(message: string) {
+    this.message = message;
+  }
+}
+
+interface MovieAPIPrimaryImageCaption {
+  plainText: string;
+  _typename: string;
+}
+  
+interface MovieAPIPrimaryImage {
+  id: string;
+  width: number;
+  height: number;
+  url: string;
+  caption: MovieAPIPrimaryImageCaption;
+  _typename: string;
+}
+
+interface MovieAPITitleType {
+  text: string;
+  id: string;
+  isSeries: boolean;
+  isEpisode: boolean;
+  __typename: string;
+}
+
+interface MovieAPITitleText {
+  text: string;
+  __typename: string;
+}
+
+interface MovieAPIReleaseYear {
+  year: number;
+  __typename: string;
+}
+
+interface MovieAPIReleaseDate {
+  year: number;
+  month: number;
+  day: number;
+  __typename: string;
+}
+
+interface MovieAPIMovie {
+  _id: string;
+  id: string;
+  primaryImage: MovieAPIPrimaryImage;
+  titleType: MovieAPITitleType;
+  titleText: MovieAPITitleText;
+  originalTitleText: MovieAPITitleText;
+  releaseYear: MovieAPIReleaseYear;
+  releaseDate: MovieAPIReleaseDate;
+}
+
+interface MovieAPIPaginatedRes<T> {
+  page: number;
+  next: number;
+  entries: number;
+  results: T[]
 }
 
 class MoviesAPI {
-  BASE_URL = "http://www.omdbapi.com/";
+  BASE_URL = process.env.NEXT_PUBLIC_MOVIES_API_URL || "";
 
-  private fetch(url: string, searchParams?: URLSearchParams, options?: RequestInit) {
-
+  private fetch(url: string, options?: RequestInit) {
     let urlString = this.BASE_URL + url;
+    options = options ? options : {};
 
-    if (!searchParams) {
-      searchParams = new URLSearchParams()
-    } 
+    const headers = new Headers();
+    headers.append("X-RapidAPI-Key", process.env.NEXT_PUBLIC_MOVIES_API_KEY || "");
+    headers.append("X-RapidAPI-Host", "moviesdatabase.p.rapidapi.com");
 
-    if (process.env.NEXT_PUBLIC_MOVIES_API_KEY) {
-      searchParams.append("apiKey", process.env.NEXT_PUBLIC_MOVIES_API_KEY)
-    }
-
-    const urlParamsStr = searchParams.toString();
-    if (urlParamsStr) {
-      urlString += "?" + urlParamsStr;
-    }
+    options.headers = headers;
 
     return fetch(urlString, options); 
   }
 
-  getMovieByTitle(title: string) {
-    const searchParams = new URLSearchParams();
-
-    searchParams.append("t", title);
-
-    return this.fetch("", searchParams);
-  }
-
-  getMovieByID(id: string) {
-    const searchParams = new URLSearchParams();
-
-    searchParams.append("i", id);
-
-    return this.fetch("", searchParams);
-  }
-
-  search(title: string, filters?: MovieAPISearchFilters, page: number = 1) {
-    const searchParams = new URLSearchParams();
-
-    searchParams.append("s", title);
-    searchParams.append("p", page.toString());
-
-    if (filters) {
-      if (filters.type) {
-        searchParams.append("t", filters.type);
-      }
-
-      if (filters.year) {
-        searchParams.append("y", filters.year.toString());
-      }
+  async searchByTitle(title: string): Promise<MovieAPIPaginatedRes<MovieAPIMovie>> {
+    try {
+      const response = await this.fetch("/titles/search/title/" + title);
+      const data = await response.json();
+      return Promise.resolve(data);
+    } catch (error) {
+      return Promise.reject(new MovieAPIError("Failed to search movies"));
     }
-
-    return this.fetch("", searchParams);
   }
 }
 
@@ -73,5 +100,18 @@ function getMoviesAPISingleton() {
   return movieAPIInstance
 }
 
-export { getMoviesAPISingleton };
-export type MovieAPISearchFilter = MovieAPISearchFilters;
+export { 
+  getMoviesAPISingleton, 
+  MovieAPIError,
+};
+
+export type {
+  MovieAPIPrimaryImageCaption,
+  MovieAPIPrimaryImage,
+  MovieAPITitleType,
+  MovieAPITitleText,
+  MovieAPIReleaseYear,
+  MovieAPIReleaseDate,
+  MovieAPIMovie,
+  MovieAPIPaginatedRes,
+}

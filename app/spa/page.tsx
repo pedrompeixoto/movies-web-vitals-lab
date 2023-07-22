@@ -14,15 +14,8 @@ export default function SPA() {
     const getMovies = async () => {
       if (movieTitleQuery) {
         try {
-          const response = await moviesAPI.getMovieByTitle(movieTitleQuery);
-          const result = await response.json();
-
-          const response2 = await moviesAPI.search(movieTitleQuery);
-          const result2 = await response2.json();
-
-          console.log(result2);
-
-          setMovie(result);
+          const moviesRes = await moviesAPI.searchByTitle(movieTitleQuery);
+          setMovie(moviesRes.results[0]);
         } catch (err) {
           console.log(err);
         }
@@ -35,8 +28,8 @@ export default function SPA() {
   return (
     <main className="flex flex-col items-center p-24">
       <input className="" type="text" value={movieTitleQuery}/>
-      <button onClick={() => setMovieTitleQuery("pulp fiction")}>search</button>
-      <p className="mt-8">{movie.Title}</p>
+      <button onClick={() => setMovieTitleQuery("Oppenheimer")}>search</button>
+      <p className="mt-8">{movie.titleText?.text || ""}</p>
     </main>
   );
 }

@@ -4,14 +4,14 @@ import { getMoviesAPISingleton } from "../../movies-api/movies-api"
 export const dynamic = "error"
 
 const moviesAPI = getMoviesAPISingleton();
+const movieTitleQuery = "Oppenheimer";
 
 export default async function SSG() {
-  const movieRes = await moviesAPI.getMovieByTitle("pulp fiction")
-  const movie = await movieRes.json();
-  
+  const movies = await moviesAPI.searchByTitle(movieTitleQuery);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <p>{ movie.Title }</p>
+      <p>{ movies.results[0].titleText.text }</p>
     </main>
   )
 }
