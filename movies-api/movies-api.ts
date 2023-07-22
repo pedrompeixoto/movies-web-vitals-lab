@@ -96,13 +96,24 @@ class MoviesAPI {
     }
   }
 
+  async searchByKeyword(title: string): Promise<MovieAPIPaginatedRes<MovieAPIMovie>> {
+    try {
+      const body = { titleType: "movie" };
+      const response = await this.fetch("/titles/search/keyword/" + title, { body: JSON.stringify(body) });
+      const data = await response.json() as MovieAPIPaginatedRes<MovieAPIMovie>;
+      return Promise.resolve(data);
+    } catch (error) {
+      return Promise.reject(new MovieAPIError("Failed to search movies"));
+    }
+  }
+
   async rating(imdbId: string): Promise<MovieAPIRating> {
     try {
       const response = await this.fetch("/titles/" + imdbId + "/ratings");
       const data = await response.json() as MovieAPIRating;
       return Promise.resolve(data);
     } catch (error) {
-      return Promise.reject(new MovieAPIError("Failed to search movies"));
+      return Promise.reject(new MovieAPIError("Failed to retrieve rating."));
     }
   }
   
