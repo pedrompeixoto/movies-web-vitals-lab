@@ -1,4 +1,3 @@
-
 import MovieEntry from "@/components/movie-entry";
 import { getMoviesAPISingleton } from "../../movies-api/movies-api"
 
@@ -12,7 +11,7 @@ export default async function SSR() {
 
   return (
     <div className="flex flex-col items-center p-24 gap-10">
-      <div className="grid grid-cols-4 gap-8 place-content-center">
+      <div className="grid md:grid-cols-2 grid-cols-1 xl:grid-cols-4  gap-8 place-content-center">
         { movies.results.map(movie => {
         {/* TODO placeholder when image is missing. Entries without a poster are hidden for now */} 
           if (movie.primaryImage?.url) {
