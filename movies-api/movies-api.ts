@@ -56,9 +56,15 @@ interface MovieAPIMovie {
   releaseDate: MovieAPIReleaseDate;
 }
 
+interface MovieAPIRating {
+  tconst: string;
+  averageRating: number;
+  numVotes: number;
+}
+
 interface MovieAPIPaginatedRes<T> {
   page: number;
-  next: number;
+  next: string; // url
   entries: number;
   results: T[]
 }
@@ -81,13 +87,25 @@ class MoviesAPI {
 
   async searchByTitle(title: string): Promise<MovieAPIPaginatedRes<MovieAPIMovie>> {
     try {
-      const response = await this.fetch("/titles/search/title/" + title);
-      const data = await response.json();
+      const body = { titleType: "movie" };
+      const response = await this.fetch("/titles/search/title/" + title, { body: JSON.stringify(body) });
+      const data = await response.json() as MovieAPIPaginatedRes<MovieAPIMovie>;
       return Promise.resolve(data);
     } catch (error) {
       return Promise.reject(new MovieAPIError("Failed to search movies"));
     }
   }
+
+  async rating(imdbId: string): Promise<MovieAPIRating> {
+    try {
+      const response = await this.fetch("/titles/" + imdbId + "/ratings");
+      const data = await response.json() as MovieAPIRating;
+      return Promise.resolve(data);
+    } catch (error) {
+      return Promise.reject(new MovieAPIError("Failed to search movies"));
+    }
+  }
+  
 }
 
 let movieAPIInstance: MoviesAPI | null = null
@@ -114,4 +132,5 @@ export type {
   MovieAPIReleaseDate,
   MovieAPIMovie,
   MovieAPIPaginatedRes,
+  MovieAPIRating,
 }
